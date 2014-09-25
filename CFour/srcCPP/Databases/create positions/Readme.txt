@@ -1,0 +1,1 @@
+Create all legal Positions with X stones and store them in a File. X can be set in the file Unit1.cpp.
