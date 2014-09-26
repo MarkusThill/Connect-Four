@@ -1,4 +1,4 @@
 Connect-Four
 ============
 
-A Java-Framework for the game Connect Four with different types of agents and algorithms (TD-learning, AlphaBeta-Search, MCTS)
+A Java framework for the game Connect Four (Connect-4, Connect-Four) with different types of agents and algorithms (reinforcement learning [TD with eligibility traces], AlphaBeta-Search, MCTS). Contains a perfect-playing MiniMax agent for evaluation purposes.
