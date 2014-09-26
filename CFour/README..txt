@@ -2,11 +2,11 @@ Starting the framework:
 -----------------------
 (e.g. in Eclipse)  Make a new Eclipse project with build path "CFour"
 
-Start the GUI: src/gui/C4Frame.java ' Run as Java Application (Alt-Shift-X, then J)
+Start the GUI: src/gui/C4Frame_v2_14.java ' Run as Java Application (Alt-Shift-X, then J)
 
 Configuration: There are some parameter files with useful agent settings in tdpar/, load them with Params - Open
 
-Help files are in CFour/src/doc: index.htm and Help.pdf
+Help files are in CFour/src/doc: index.htm
 
 
 Issues: 
