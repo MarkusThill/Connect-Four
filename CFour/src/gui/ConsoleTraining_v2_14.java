@@ -94,7 +94,7 @@ public class ConsoleTraining_v2_14 {
 		DecimalFormat df = new DecimalFormat("+0.00000;-0.00000");
 		for (int i = 0; i <= gameNum; i++) {
 			tds.trainNet(1);
-			if (GameInterval.evalNecessary(tdPar.infoInterval, i)) {
+			if (GameInterval.evalNecessary(tdPar.infoInterval, i) && i != 0) {
 				if (!useCSV) {
 					System.out.println(i + " ; alpha:"
 							+ df.format(tds.getAlpha()) + " ; epsilon: "

@@ -44,6 +44,9 @@ public class TDParams implements Serializable, Cloneable {
 	public int alphaChangeMethod = 0;
 	public double alphaChangeParam = 0.0;
 
+	// Update Value-function also on random moves
+	public boolean epsRandUpdate = false;
+	
 	// prob. for explor. moves
 	public double epsilonInit = 0.1;
 	public double epsilonFinal = 0.1;

@@ -46,10 +46,14 @@ public class AutoStep extends LearningRates {
 	}
 
 	/**
-	 * Update the Parameter v_i and alpha_i in the AutoStep-Algorithm. 
-	 * @param i Index i.
-	 * @param delta Error-Signal of the TD-Algorithm.
-	 * @param x_i The input for weight i. 
+	 * Update the Parameter v_i and alpha_i in the AutoStep-Algorithm.
+	 * 
+	 * @param i
+	 *            Index i.
+	 * @param delta
+	 *            Error-Signal of the TD-Algorithm.
+	 * @param x_i
+	 *            The input for weight i.
 	 * @return The new value for alpha_i.
 	 */
 	public double auto_update_v_alpha(int i, double delta, double x_i) {
@@ -65,16 +69,23 @@ public class AutoStep extends LearningRates {
 		return auto_alpha[i];
 	}
 
-	/* (non-Javadoc)
-	 * @see adaptableLearningRates.LearningRates#getLearningRate(nTupleTD.UpdateParams)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * adaptableLearningRates.LearningRates#getLearningRate(nTupleTD.UpdateParams
+	 * )
 	 */
 	@Override
 	public double getLearningRate(UpdateParams u_i) {
 		return auto_alpha[u_i.i];
 	}
 
-	/* (non-Javadoc)
-	 * @see adaptableLearningRates.LearningRates#preWeightUpdateTask(nTupleTD.UpdateParams)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see adaptableLearningRates.LearningRates#preWeightUpdateTask(nTupleTD.
+	 * UpdateParams)
 	 */
 	@Override
 	public void preWeightUpdateTask(UpdateParams u_i) {
@@ -82,8 +93,11 @@ public class AutoStep extends LearningRates {
 		auto_alpha[u_i.i] = (float) (auto_alpha[u_i.i] * u_i.globalAlpha);
 	}
 
-	/* (non-Javadoc)
-	 * @see adaptableLearningRates.LearningRates#postWeightUpdateTask(nTupleTD.UpdateParams)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see adaptableLearningRates.LearningRates#postWeightUpdateTask(nTupleTD.
+	 * UpdateParams)
 	 */
 	@Override
 	public void postWeightUpdateTask(UpdateParams u_i) {
@@ -96,8 +110,11 @@ public class AutoStep extends LearningRates {
 		auto_h[i] = (float) (auto_h[i] * x_plus + alpha * u_i.delta * x_i);
 	}
 
-	/* (non-Javadoc)
-	 * @see adaptableLearningRates.LearningRates#getBestParams(nTupleTD.TDParams)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * adaptableLearningRates.LearningRates#getBestParams(nTupleTD.TDParams)
 	 */
 	@Override
 	public TDParams getBestParams(final TDParams tdPar) {
@@ -110,6 +127,11 @@ public class AutoStep extends LearningRates {
 		bestTDPar.alphaInit = AUTOSTEP_BESTALPHA;
 		bestTDPar.alphaFinal = AUTOSTEP_BESTALPHA;
 		bestTDPar.idbdTheta = AUTOSTEP_BESTMU;
+		// Elig-Traces: we choose the variant [rr]. Resetting and replacing
+		// traces with lambda = 0.8
+		bestTDPar.lambda = 0.8;
+		bestTDPar.replacingTraces = true;
+		bestTDPar.resetEligOnRandomMove = true;
 		return bestTDPar;
 	}
 

@@ -29,7 +29,7 @@ import nTupleTD.TDSAgent;
 import competition.Progress;
 
 public class LoadSaveTD {
-
+	private static final String DEFAULT_DIR_AGENT = "agents";
 	private final JFileChooserApprove fc;
 	private final C4Game c4Game;
 	private final C4Buttons c4Buttons;
@@ -43,6 +43,7 @@ public class LoadSaveTD {
 		this.c4Frame = c4Frame;
 		
 		fc = new JFileChooserApprove();
+		fc.setCurrentDirectory(new File(DEFAULT_DIR_AGENT));
 	}
 
 	public JDialog createProgressDialog(final IGetProgress streamProgress,

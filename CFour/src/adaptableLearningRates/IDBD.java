@@ -141,6 +141,13 @@ public class IDBD extends LearningRates {
 		default:
 			throw new UnsupportedOperationException("Wrong Method!!");
 		}
+
+		// Elig-Traces: we choose the variant [rr]. Resetting and replacing
+		// traces with lambda = 0.8
+		bestTDPar.lambda = 0.8;
+		bestTDPar.replacingTraces = true;
+		bestTDPar.resetEligOnRandomMove = true;
+
 		return bestTDPar;
 	}
 

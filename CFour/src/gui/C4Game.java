@@ -769,7 +769,7 @@ public class C4Game extends JPanel implements Runnable, ListOperation {
 				activeEligTracesOverall += activeTraces;
 				activeEligTracesInterval += activeTraces;
 			}
-			if (GameInterval.evalNecessary(tdPar.infoInterval, i)) {
+			if (GameInterval.evalNecessary(tdPar.infoInterval, i)  && i != 0) {
 
 				if (useCSV) {
 					System.out.print(i + ";" + df.format(tds.getAlpha()) + ";"

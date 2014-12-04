@@ -156,6 +156,13 @@ public class IDBDwk extends LearningRates {
 		bestTDPar.idbdBetaInit = IDBD_WK_BEST_BETA_INIT;
 		bestTDPar.idbdTheta = IDBD_WK_BEST_THETA;
 		bestTDPar.idbdWKOmegak = IDBD_WK_BEST_OMEGA_K;
+
+		// Elig-Traces: we choose the variant [rr]. Resetting and replacing
+		// traces with lambda = 0.8
+		bestTDPar.lambda = 0.8;
+		bestTDPar.replacingTraces = true;
+		bestTDPar.resetEligOnRandomMove = true;
+
 		return bestTDPar;
 	}
 
@@ -184,8 +191,12 @@ public class IDBDwk extends LearningRates {
 			omega_k = tdPar.idbdWKOmegak;
 		}
 
-		/* (non-Javadoc)
-		 * @see adaptableLearningRates.LearningRates.LRCommon#commonPreUpdateTask(nTupleTD.UpdateParams)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * adaptableLearningRates.LearningRates.LRCommon#commonPreUpdateTask
+		 * (nTupleTD.UpdateParams)
 		 */
 		@Override
 		public void commonPreUpdateTask(UpdateParams u) {
@@ -194,22 +205,32 @@ public class IDBDwk extends LearningRates {
 			k_acc = (1.0 - GAMMA) * k_acc + GAMMA * y * y;
 		}
 
-		/* (non-Javadoc)
-		 * @see adaptableLearningRates.LearningRates.LRCommon#commonGetLearningRate(nTupleTD.UpdateParams)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * adaptableLearningRates.LearningRates.LRCommon#commonGetLearningRate
+		 * (nTupleTD.UpdateParams)
 		 */
 		@Override
 		public double commonGetLearningRate(UpdateParams u_i) {
 			return 0;
 		}
 
-		/* (non-Javadoc)
-		 * @see adaptableLearningRates.LearningRates.LRCommon#commonPostUpdateTask(nTupleTD.UpdateParams)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * adaptableLearningRates.LearningRates.LRCommon#commonPostUpdateTask
+		 * (nTupleTD.UpdateParams)
 		 */
 		@Override
 		public void commonPostUpdateTask(UpdateParams u_i) {
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see java.lang.Object#toString()
 		 */
 		public String toString() {

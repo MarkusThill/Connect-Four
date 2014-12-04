@@ -3,9 +3,12 @@ package miscellaneous;
 import c4.ConnectFour;
 
 /**
- * @author Markus Thill The method findThreat(the source) was generated with
+ * 
+ * The method findThreat(the source) was generated with
  *         this program, because its source-code is very long.It can be chosen
  *         if findThreats or findOddThreats is generated <br>
+ * 
+ * @author Markus Thill 
  * 
  */
 public class GenerateSource extends ConnectFour {

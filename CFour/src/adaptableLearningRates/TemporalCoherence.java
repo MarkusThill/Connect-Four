@@ -20,7 +20,7 @@ public class TemporalCoherence extends LearningRates {
 	private float tcN[] = null;
 	private float tcA[] = null;
 	private TreeMap<Integer, Double> tclAccuR = null;
-	
+
 	private WeightSubSet parentWeights;
 
 	public TemporalCoherence(TDParams tdPar, int length, WeightSubSet parent) {
@@ -57,23 +57,22 @@ public class TemporalCoherence extends LearningRates {
 	@Override
 	public double getLearningRate(UpdateParams u_i) {
 		int i = u_i.i;
-		double tc = (tcA[i] == 0 ? 1.0 : Math.abs(tcN[i]) / tcA[i]); 
+		double tc = (tcA[i] == 0 ? 1.0 : Math.abs(tcN[i]) / tcA[i]);
 
 		// When choosing exp. scheme of tcFactor
 		if (tdPar.tclUseExpScheme) {
 			double facA = tdPar.tclExpSchemeFacA;
 			tc = Math.exp(facA * (tc - 1.0));
-			
+
 			// piecewise linear
-			//double bord = Math.exp(-facA);
-			//tc = facA*tc + 1 - facA;
-			//if(tc < bord)
-			//	tc = bord;
+			// double bord = Math.exp(-facA);
+			// tc = facA*tc + 1 - facA;
+			// if(tc < bord)
+			// tc = bord;
 		}
 		return tc * u_i.globalAlpha;
 	}
-	
-	
+
 	@Override
 	public TDParams getBestParams(final TDParams tdPar) {
 		TDParams bestTDPar = null;
@@ -89,7 +88,14 @@ public class TemporalCoherence extends LearningRates {
 		bestTDPar.tclExpSchemeFacA = 2.7;
 		bestTDPar.tclMuInit = 1.0;
 		bestTDPar.tclUpdate1WeightFactors2Weights = false;
-		bestTDPar.tclUseErrorSignal = false;	
+		bestTDPar.tclUseErrorSignal = false;
+
+		// Elig-Traces: we choose the variant [rr]. Resetting and replacing
+		// traces with lambda = 0.8
+		bestTDPar.lambda = 0.8;
+		bestTDPar.replacingTraces = true;
+		bestTDPar.resetEligOnRandomMove = true;
+
 		return bestTDPar;
 	}
 
@@ -97,8 +103,9 @@ public class TemporalCoherence extends LearningRates {
 		// Recommended change or delta
 		int i = u_i.i;
 		final boolean useRWC = !tdPar.tclUseErrorSignal;
-		final double rwc = (useRWC ? u_i.globalAlpha * u_i.delta * u_i.e_i : u_i.delta);
-		final double mu = tdPar.tclMuInit; 
+		final double rwc = (useRWC ? u_i.globalAlpha * u_i.delta * u_i.e_i
+				: u_i.delta);
+		final double mu = tdPar.tclMuInit;
 
 		// update tables
 		tcN[i] = (float) (mu * tcN[i] + rwc);

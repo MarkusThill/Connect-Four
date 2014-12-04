@@ -134,8 +134,11 @@ public class ELK1 extends LearningRates {
 		return Math.exp(k1_beta[i]);
 	}
 
-	/* (non-Javadoc)
-	 * @see adaptableLearningRates.LearningRates#getBestParams(nTupleTD.TDParams)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * adaptableLearningRates.LearningRates#getBestParams(nTupleTD.TDParams)
 	 */
 	@Override
 	public TDParams getBestParams(final TDParams tdPar) {
@@ -158,6 +161,13 @@ public class ELK1 extends LearningRates {
 		default:
 			throw new UnsupportedOperationException("Wrong Method!!");
 		}
+
+		// Elig-Traces: we choose the variant [rr]. Resetting and replacing
+		// traces with lambda = 0.8
+		bestTDPar.lambda = 0.8;
+		bestTDPar.replacingTraces = true;
+		bestTDPar.resetEligOnRandomMove = true;
+
 		return bestTDPar;
 	}
 

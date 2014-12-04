@@ -9,7 +9,6 @@ import c4.AlphaBetaAgent;
 import c4.ConnectFour;
 import competition.Progress;
 
-
 /**
  * 
  * The TD-Learning for Connect Four. The value-function is modeled with a
@@ -43,9 +42,8 @@ public class TDSAgent extends ConnectFour implements Agent, Progress,
 
 	// Needed, if rewards shall be given before game is over
 	private Agent referee = null;
-	
+
 	private AgentState state = AgentState.INITIALIZED;
-	
 
 	/**
 	 * Creates a new TD-Agent
@@ -116,7 +114,7 @@ public class TDSAgent extends ConnectFour implements Agent, Progress,
 			return referee.getScore(getBoard(), true);
 
 		// Get Value from N-Tuple-System
-		if (restDepth == 0) {
+		if (restDepth <= 0) {
 			double value = m_Net.getValue(player, zobr, new long[] { fieldP1,
 					fieldP2 });
 			return value;
@@ -243,13 +241,17 @@ public class TDSAgent extends ConnectFour implements Agent, Progress,
 		long zobr = 0L, lastZobr = 0L;
 
 		resetBoard();
-		
+
 		// Init elig-traces
 		// Empty board
 		// Zobrist key is zero for empty board
 		// For Current player for the empty board
-		if(td.lambda != 0.0)
-			m_Net.resetElig(new long[] { 0L, 0L }, zobr, ConnectFour.PLAYER1); // reset elig for empty board
+		if (td.lambda != 0.0)
+			m_Net.resetElig(new long[] { 0L, 0L }, zobr, ConnectFour.PLAYER1); // reset
+																				// elig
+																				// for
+																				// empty
+																				// board
 
 		if (player == PLAYER2) {
 			// set a random "X" in the empty table:
@@ -297,7 +299,7 @@ public class TDSAgent extends ConnectFour implements Agent, Progress,
 
 			// Update weights if no random move was made or if the game is over
 			long curBoard[] = new long[] { fieldP1, fieldP2 };
-			if (!randomMove || finished) {
+			if (!randomMove || finished || td.epsRandUpdate) {
 
 				if (td.useHashIntern)
 					m_Net.updateWeights(player, lastZobr, zobr, lastBoard,
@@ -305,23 +307,28 @@ public class TDSAgent extends ConnectFour implements Agent, Progress,
 				else
 					m_Net.updateWeights(player, -1L, -1L, lastBoard, curBoard,
 							finished, reward);
-				
-				//Test: Learn Value-Function for inverted board
-//				if(false && m_GameNum < 200000)
-//				{
-//					double rewardNew = -reward;
-//					long curBoardNew[] = new long[] { fieldP2, fieldP1 };
-//					long lastBoardNew[] = new long[] { lastBoard[1], lastBoard[0] };
-//					int playerNew = (player == PLAYER1 ? PLAYER2 : PLAYER1);
-//					m_Net.updateWeights(playerNew, -1L, -1L, lastBoardNew, curBoardNew,
-//							finished, rewardNew);
-//				}
+
+				// Test: Learn Value-Function for inverted board
+				// if(false && m_GameNum < 200000)
+				// {
+				// double rewardNew = -reward;
+				// long curBoardNew[] = new long[] { fieldP2, fieldP1 };
+				// long lastBoardNew[] = new long[] { lastBoard[1], lastBoard[0]
+				// };
+				// int playerNew = (player == PLAYER1 ? PLAYER2 : PLAYER1);
+				// m_Net.updateWeights(playerNew, -1L, -1L, lastBoardNew,
+				// curBoardNew,
+				// finished, rewardNew);
+				// }
 			}
 
 			// swap players
 			player = (player == PLAYER1 ? PLAYER2 : PLAYER1);
-			
+
 			boolean resetEligOnRandomMove = td.resetEligOnRandomMove;
+
+			// Added on 31.09.2014: Possibility to update value-function when
+			// random moves are performed
 			if (!randomMove || !resetEligOnRandomMove) {
 				// Update elig-traces
 				// curBoard: state s_{t+1}
@@ -329,18 +336,18 @@ public class TDSAgent extends ConnectFour implements Agent, Progress,
 				// player: player to move for the current state s_{t+1}. The
 				// function upfateWeights also uses the opposite player for the
 				// V(s_{t+1}).
-				//TODO: scale Elig on random move, or not???
-				if(td.lambda != 0.0) 
+				// TODO: scale Elig on random move, or not???
+				if (td.lambda != 0.0)
 					m_Net.updateElig(curBoard, zobr, player);
-			}
-			else if(td.lambda != 0.0){
-				// if we made a random move, we maybe have to reset the eligibility
-				// traces. Simply set the eligibity-tace vector to the gradient of
+			} else if (td.lambda != 0.0) {
+				// if we made a random move, we maybe have to reset the
+				// eligibility
+				// traces. Simply set the eligibity-tace vector to the gradient
+				// of
 				// the new state (s_{t+1})
 				m_Net.resetElig(curBoard, zobr, player);
 			}
 
-			
 		}
 
 		// update alpha and epsilon
@@ -350,7 +357,7 @@ public class TDSAgent extends ConnectFour implements Agent, Progress,
 		state = AgentState.TRAINED;
 		return false;
 	}
-	
+
 	public int countActiveEligTraces() {
 		return m_Net.countActiveEligTraces();
 	}
@@ -429,7 +436,7 @@ public class TDSAgent extends ConnectFour implements Agent, Progress,
 	public TDParams getTDParams() {
 		return td;
 	}
-	
+
 	public String getCommonLR() {
 		return m_Net.getCommonLR();
 	}
