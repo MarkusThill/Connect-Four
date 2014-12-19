@@ -14,7 +14,7 @@ import c4.ConnectFour;
 // since the state is defined by a sequence of actions?
 
 public class GameState extends ConnectFour {
-	private static final AlphaBetaAgent AB = initAlphaBetaAgent();
+	private static final AlphaBetaAgent AB = null; //initAlphaBetaAgent();
 	private static final boolean DEBUG = true;
 	private static final Random RAND = new Random();
 
@@ -53,21 +53,21 @@ public class GameState extends ConnectFour {
 	}
 
 	// For Debug only
-	private static AlphaBetaAgent initAlphaBetaAgent() {
-		OptionsMinimax min = new OptionsMinimax(AlphaBetaAgent.TRANSPOSBYTES);
-		AlphaBetaAgent ab = new AlphaBetaAgent(new BookSum());
-		ab.resetBoard();
-
-		ab.setTransPosSize(min.getTableIndex());
-		ab.setBooks(min.useNormalBook(), min.useDeepBook(),
-				min.useDeepBookDist());
-		ab.setDifficulty(min.getSearchDepth());
-		ab.randomizeEqualMoves(min.randomizeEqualMoves());
-
-		// Using N-Tuple-System for move-Ordering
-		// ab.setTDAgent((TDSAgent) players[2]);
-		return ab;
-	}
+//	private static AlphaBetaAgent initAlphaBetaAgent() {
+//		OptionsMinimax min = new OptionsMinimax(AlphaBetaAgent.TRANSPOSBYTES);
+//		AlphaBetaAgent ab = new AlphaBetaAgent(new BookSum());
+//		ab.resetBoard();
+//
+//		ab.setTransPosSize(min.getTableIndex());
+//		ab.setBooks(min.useNormalBook(), min.useDeepBook(),
+//				min.useDeepBookDist());
+//		ab.setDifficulty(min.getSearchDepth());
+//		ab.randomizeEqualMoves(min.randomizeEqualMoves());
+//
+//		// Using N-Tuple-System for move-Ordering
+//		// ab.setTDAgent((TDSAgent) players[2]);
+//		return ab;
+//	}
 
 	/**
 	 * Determines the move-list.

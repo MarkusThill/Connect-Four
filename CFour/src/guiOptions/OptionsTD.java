@@ -56,6 +56,8 @@ import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 
 public class OptionsTD extends JFrame {
 
+	private static final String DEFAULT_TDPAR_DIR = "tdPar";
+
 	private static final int TITLEFONTSIZE = 20;
 
 	private static final long serialVersionUID = 1L;
@@ -153,6 +155,7 @@ public class OptionsTD extends JFrame {
 	private JComboBox<String> comboWeightUpdateMethod;
 	private JComboBox<String> comboActivation;
 
+	private JCheckBox cbEpsRandUpdate;
 	private JCheckBox randNTuples;
 	private JCheckBox useSym;
 	private JCheckBox randInitWeights;
@@ -172,7 +175,7 @@ public class OptionsTD extends JFrame {
 	private JButton bLoadBest;
 	private JButton bChangeIntervals;
 	
-	JFileChooserApprove fc = new JFileChooserApprove();
+	JFileChooserApprove fc;
 
 	private OptionsIntervals intervalListOpts = null;
 
@@ -182,6 +185,9 @@ public class OptionsTD extends JFrame {
 
 	public OptionsTD(TDParams tdPar) {
 		super("TD Parameter");
+		
+		fc = new JFileChooserApprove();
+		fc.setCurrentDirectory(new File(DEFAULT_TDPAR_DIR));
 
 		Font fontTitle = new Font("Serif", Font.BOLD, TITLEFONTSIZE);
 
@@ -192,6 +198,8 @@ public class OptionsTD extends JFrame {
 		comboWeightUpdateMethod = new JComboBox<String>(
 				TDParams.WEIGHTUPDATEMETHOD);
 		comboWeightUpdateMethod.setMaximumRowCount(10);
+		
+		cbEpsRandUpdate = new JCheckBox("Update on random move");
 
 		tAlpha = new JTextField();
 		tAlphafin = new JTextField();
@@ -521,10 +529,10 @@ public class OptionsTD extends JFrame {
 		p.add(lEpsExtraParam);
 		p.add(tEpsExtraParam);
 
+		p.add(new Canvas());
+		p.add(cbEpsRandUpdate);
 		p.add(lEpsSlope);
 		p.add(tEpsSlope);
-		p.add(new Canvas());
-		p.add(new Canvas());
 
 		p.add(lambdaL);
 		p.add(tLambda);
@@ -1185,6 +1193,10 @@ public class OptionsTD extends JFrame {
 	public double getAlphaFinal() {
 		return Double.valueOf(tAlphafin.getText()).doubleValue();
 	}
+	
+	public boolean getEpsRandUpdate() {
+		return cbEpsRandUpdate.isSelected();
+	}
 
 	public double getEpsilon() {
 		return Double.valueOf(tEpsIn.getText()).doubleValue();
@@ -1427,6 +1439,7 @@ public class OptionsTD extends JFrame {
 		tdPar.alphaFinal = getAlphaFinal();
 		tdPar.alphaChangeMethod = getAlphaChangeType();
 		tdPar.epsilonInit = getEpsilon();
+		tdPar.epsRandUpdate = getEpsRandUpdate();
 		tdPar.epsilonFinal = getEpsilonFinal();
 		tdPar.epsilonMethod = getEpsilonChange();
 		tdPar.gamma = getGamma();
@@ -1497,6 +1510,7 @@ public class OptionsTD extends JFrame {
 			tAlphafin.setText(tdPar.alphaFinal + "");
 			comboAlphaChangeType.setSelectedIndex(tdPar.alphaChangeMethod);
 
+			cbEpsRandUpdate.setSelected(tdPar.epsRandUpdate);
 			tEpsIn.setText(tdPar.epsilonInit + "");
 			tEpsfin.setText(tdPar.epsilonFinal + "");
 			comboEpsilonChangeType.setSelectedIndex(tdPar.epsilonMethod);

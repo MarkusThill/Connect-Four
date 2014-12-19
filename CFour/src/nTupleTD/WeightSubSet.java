@@ -25,7 +25,7 @@ public abstract class WeightSubSet implements Serializable {
 	private static final boolean DEBUG = false;
 	private static final int DBG_SIZE_RWC_LIST = 100000;
 	private static final long serialVersionUID = 8718866390489881056L;
-	private static final int SIZEOF_FLOAT = 4;
+	private static final int SIZEOF_FLOAT = Float.SIZE;
 	private double EPS = 0.001;
 	protected TDParams tdPar = null;
 	protected float lut[];
@@ -166,7 +166,6 @@ public abstract class WeightSubSet implements Serializable {
 			int index = entry.getKey();
 			double e_i = entry.getValue();
 			// TODO:x_i needed??
-			// TODO: What a
 			UpdateParams u_i = new UpdateParams(index, u.globalAlpha, u.delta,
 					u.derivY, e_i, u.y);
 			update(u_i);

@@ -26,31 +26,44 @@ public class AlphaBound extends LearningRates {
 		super(null, tdPar);
 	}
 
-	/* (non-Javadoc)
-	 * @see adaptableLearningRates.LearningRates#preWeightUpdateTask(nTupleTD.UpdateParams)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see adaptableLearningRates.LearningRates#preWeightUpdateTask(nTupleTD.
+	 * UpdateParams)
 	 */
 	@Override
 	public void preWeightUpdateTask(UpdateParams u_i) {
 		// nothing
 	}
 
-	/* (non-Javadoc)
-	 * @see adaptableLearningRates.LearningRates#getLearningRate(nTupleTD.UpdateParams)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * adaptableLearningRates.LearningRates#getLearningRate(nTupleTD.UpdateParams
+	 * )
 	 */
 	@Override
 	public double getLearningRate(UpdateParams u_i) {
 		return u_i.globalAlpha;
 	}
 
-	/* (non-Javadoc)
-	 * @see adaptableLearningRates.LearningRates#postWeightUpdateTask(nTupleTD.UpdateParams)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see adaptableLearningRates.LearningRates#postWeightUpdateTask(nTupleTD.
+	 * UpdateParams)
 	 */
 	@Override
 	public void postWeightUpdateTask(UpdateParams u_i) {
 	}
 
-	/* (non-Javadoc)
-	 * @see adaptableLearningRates.LearningRates#getBestParams(nTupleTD.TDParams)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * adaptableLearningRates.LearningRates#getBestParams(nTupleTD.TDParams)
 	 */
 	@Override
 	public TDParams getBestParams(final TDParams tdPar) {
@@ -62,6 +75,13 @@ public class AlphaBound extends LearningRates {
 		}
 		// Set alpha-Init to 1.0
 		bestTDPar.alphaInit = 1.0;
+
+		// Elig-Traces: we choose the variant [rr]. Resetting and replacing
+		// traces with lambda = 0.8
+		bestTDPar.lambda = 0.8;
+		bestTDPar.replacingTraces = true;
+		bestTDPar.resetEligOnRandomMove = true;
+
 		return bestTDPar;
 	}
 

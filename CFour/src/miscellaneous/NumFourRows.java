@@ -3,8 +3,9 @@ package miscellaneous;
 import c4.ConnectFour;
 
 /**
- * @author Markus Thill With this little class it is possible to calculate the
+ * With this little class it is possible to calculate the
  *         number of four-rows which can be put through every single field.
+ * @author Markus Thill 
  */
 public class NumFourRows extends ConnectFour {
 

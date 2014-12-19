@@ -10,10 +10,10 @@ import miscellaneous.Tools;
 //TODO: Datentyp float für LUT verringert Größe um die Hälfte
 
 /**
- * @author Markus Thill
- * 
  *         Implementation of an single N-Tuple. Every single n-Tuple gets an own
  *         look-up-table (lut)
+ * 
+ * @author Markus Thill
  */
 public class NTupleC4 extends WeightSubSet implements Serializable {
 

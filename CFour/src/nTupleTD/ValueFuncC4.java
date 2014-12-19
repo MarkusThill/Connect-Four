@@ -16,9 +16,10 @@ import adaptableLearningRates.TemporalCoherence;
 import c4.ConnectFour;
 
 /**
+ *  Implementation of an learning value-function using a n-Tuple-System
+ * 
  * @author Markus Thill
  * 
- *         Implementation of an learning value-function using a n-Tuple-System
  * 
  */
 public class ValueFuncC4 implements Serializable {
@@ -143,7 +144,7 @@ public class ValueFuncC4 implements Serializable {
 		// the Step-Size Adaption algorithm. Create here
 		if (tdPar.updateMethod == UpdateMethod.IDBD_WK)
 			lrCommon = IDBDwk.createCommonLR(tdPar);
-		else if(tdPar.updateMethod == UpdateMethod.IRPROP_PLUS)
+		else if (tdPar.updateMethod == UpdateMethod.IRPROP_PLUS)
 			lrCommon = IRprop.createCommonLR(tdPar);
 
 		for (int i = 0; i < nTuples.length; i++) {
@@ -221,7 +222,7 @@ public class ValueFuncC4 implements Serializable {
 	 * adjust the learning-rate alpha
 	 */
 	public void updateAlpha() {
-		if(tdPar.updateMethod == UpdateMethod.TDL)
+		if (tdPar.updateMethod == UpdateMethod.TDL)
 			alpha = alpha * alphaChangeRatio;
 	}
 
@@ -325,7 +326,8 @@ public class ValueFuncC4 implements Serializable {
 				update(curPlayer, delta, y, false, i);
 			else {
 				UpdateParams u;
-				double derivY = ActivationFunction.getDeriv(y, tdPar.activation);
+				double derivY = ActivationFunction
+						.getDeriv(y, tdPar.activation);
 				// Here only delta, derivY and y are needed to bet set
 				// i and e_i are set later, so set to arbitrary values here
 				u = new UpdateParams(-999, alpha, delta, derivY, -999, y);
@@ -333,9 +335,9 @@ public class ValueFuncC4 implements Serializable {
 			}
 		} else
 			updateEpisodicTCL(curPlayer, curZobr, curBoard, delta, y);
-		
+
 		// TODO: Added 14.07.2014
-		if(weights[0][0].lr.doPostUpdateTask()) {
+		if (weights[0][0].lr.doPostUpdateTask()) {
 			int numTuples = weights[0].length;
 			for (int k = 0; k < numTuples; k++) {
 				weights[p][k].lr.postUpdateTask(finished);
@@ -441,7 +443,7 @@ public class ValueFuncC4 implements Serializable {
 
 	private double updateAndGetGlobalAlphaELK1(double delta,
 			boolean useSymmetry, double deriv, int[] i, int p) {
-		 //TODO: For eligibility traces
+		// TODO: For eligibility traces
 		int k;
 		int numTuples = weights[0].length;
 		double M = 0.0;
@@ -470,7 +472,7 @@ public class ValueFuncC4 implements Serializable {
 		double x_i;
 		int numTuples = weights[0].length;
 		int k;
-		 //TODO: For eligibility traces
+		// TODO: For eligibility traces
 		for (k = 0; k < numTuples; k++) {
 			x_i = 1;
 			if (i[k] == i[k + numTuples] && !USEBINARYFV)
@@ -492,7 +494,7 @@ public class ValueFuncC4 implements Serializable {
 			long[] curBoard, double delta, double y) {
 		episodeCounter++;
 		// TODO: For elig-traces...............
-		double elig =ActivationFunction.weightLossDeriv(y, tdPar.activation);
+		double elig = ActivationFunction.weightLossDeriv(y, tdPar.activation);
 
 		// Accumulate recommended weight change
 		tclAccumulateRWC(curPlayer, curBoard, curZobr, delta, elig);
@@ -678,16 +680,16 @@ public class ValueFuncC4 implements Serializable {
 		double sigFac = tdPar.sigOutputFac;
 
 		return ActivationFunction.activation(linearVal * sigFac, activation);
-		
-//		switch(activation) {
-//		case LOGSIG:
-//			return 1.0 / (1.0 + Math.exp(-linearVal * sigFac));
-//		case TANH:
-//			return MY_TANH.tanh(linearVal * sigFac);
-//		case NONE:
-//		default:
-//			return linearVal;
-//		}
+
+		// switch(activation) {
+		// case LOGSIG:
+		// return 1.0 / (1.0 + Math.exp(-linearVal * sigFac));
+		// case TANH:
+		// return MY_TANH.tanh(linearVal * sigFac);
+		// case NONE:
+		// default:
+		// return linearVal;
+		// }
 	}
 
 	/**

@@ -9,7 +9,7 @@ import c4.ConnectFour;
 // http://ccg.doc.gold.ac.uk/teaching/ludic_computing/ludic16.pdf
 // Slide 16
 
-// TODO: 1. How are permutations handled in MCTS? Different mode sequences can lead to the same state. What about transposition tables?
+// TODO: 1. How are action-permutations handled in MCTS? Different mode sequences can lead to the same state. What about transposition tables?
 // TODO: 2. Can we take the selected subtree of the MCTS-search of the previous state as basis for the new search?
 // TODO: 3. What about he uct-variant Epsilon-Greedy?
 // TODO: 4. What about a few smaller trees (instead of one big tree) with a voting technique (similar to RF)?
