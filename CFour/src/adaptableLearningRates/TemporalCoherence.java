@@ -108,7 +108,7 @@ public class TemporalCoherence extends LearningRates {
 		final double mu = tdPar.tclMuInit;
 
 		// update tables
-		tcN[i] = (float) (mu * tcN[i] + rwc);
+		tcN[i] = (float) (/*mu * tcN[i]*/ + rwc); //TODO: add mu again....
 		tcA[i] = (float) (mu * tcA[i] + Math.abs(rwc));
 	}
 
@@ -128,7 +128,7 @@ public class TemporalCoherence extends LearningRates {
 			// remember: lut[i] += stepSize * delta * elig;
 			// y is not needed, so set to -999.9
 			// e_i is already in rwc, so e_i = 1
-			UpdateParams u_i = new UpdateParams(i, alpha, rwc, 1.0, 1.0, -999.9);
+			UpdateParams u_i = new UpdateParams(i, alpha, rwc, 1.0, 1.0, -999.0, -999.9);
 			parentWeights.update(u_i);
 		}
 	}

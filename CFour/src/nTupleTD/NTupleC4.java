@@ -176,7 +176,7 @@ public class NTupleC4 extends WeightSubSet implements Serializable {
 		createReachablePoints();
 		createLUTandLR();
 		if (useElig)
-			eligTraces = new TreeMap<Integer, Double>();
+			eligTraces = new TreeMap<Integer, EligibilityTrace>();
 	}
 
 	/**

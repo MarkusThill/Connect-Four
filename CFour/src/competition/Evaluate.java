@@ -135,6 +135,20 @@ public class Evaluate implements Progress {
 		}
 	}
 
+	/**
+	 * 
+	 * @param td
+	 * @param ab
+	 * @param tdPar
+	 * @return double[2] score with <br>
+	 * <ul>
+	 * 		<li> score[0]: success rate \in [0.0,1.0] for playing from several start boards with 
+	 * 			0, 1, or 2 pieces against Minimax (AlphaBetaAgent) 
+	 * 		<li> score[1]: success rate for playing against Minimax (AlphaBetaAgent) from empty  
+	 * 			board. Minimax chooses randomly among different moves leading to a draw
+	 * 		<li> score[2]: rate of draws among the tdPar.numEvaluationMatches games played
+	 * <ul>
+	 */
 	public double[] getScore(Agent td, AlphaBetaAgent ab, TDParams tdPar) {
 		start = System.currentTimeMillis();
 		
@@ -262,12 +276,13 @@ public class Evaluate implements Progress {
 		double[] score = getScore(td, ab, tdPar);
 		String str = new String();
 		if (tdPar.evaluate012)
-			str += "Reached score for all positions with 0,1 and 2 pieces: "
-					+ df.format(score[0]) + " (min:0 ; max: 1.0)\n";
+			str = "Score for all positions with 0,1 and 2 pieces: "
+					+ df.format(score[0]) + " (min:0; max: 1,0)\n";
 		if (tdPar.evaluateAgent)
-			str += "Reached score for  " + tdPar.numEvaluationMatches
+			str = "Score for  " + tdPar.numEvaluationMatches
 					+ " games from empty board: " + df.format(score[1])
-					+ " (min:0 ; max: 1.0)\n" + "Draw: " + score[2] + "\n";
+					+ " (min:0; max: 1,0)\n" + "Draw: " + (int)(score[2]*tdPar.numEvaluationMatches) 
+					+ " / " + tdPar.numEvaluationMatches + "\n";
 		return str;
 	}
 	

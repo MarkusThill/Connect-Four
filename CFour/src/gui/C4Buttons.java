@@ -936,7 +936,7 @@ public class C4Buttons extends JPanel {
 		/** Creates a new instance of StatusBar */
 		public StatusBar() {
 			super();
-			super.setPreferredSize(new Dimension(200, 32));
+			super.setPreferredSize(new Dimension(200, 46));
 			setMessage("Ready");
 		}
 

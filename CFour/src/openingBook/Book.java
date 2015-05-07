@@ -4,13 +4,15 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * @author Markus Thill There are 3 different opning-books available: 1. Opening
- *         book with all positions with 8 pieces (win/draw/loss) <br>
+ * There are 3 different opning-books available: <br>
+ *         1. Opening book with all positions with 8 pieces (win/draw/loss) <br>
  *         2. Opening book with all positions with 12 pieces (win/draw/loss) <br>
  *         3. Opening book with all positions with 12 pieces (win/draw/loss with
  *         exact distance) <br>
  * 
  *         One of these books can be selected by setting the bookNr to 0,1 or 2.
+ *         
+ * @author Markus Thill 
  */
 public class Book {
 

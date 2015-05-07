@@ -22,12 +22,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.Semaphore;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import agentIO.LoadSaveTD;
-
 import mcts.MCTSParams;
 import mcts.MCTSPlayer;
 import nTupleTD.TDParams;
@@ -106,7 +104,7 @@ public class C4Game extends JPanel implements Runnable, ListOperation {
 
 	// Possible states
 	protected enum State {
-		TRAIN_X, TRAIN_O, TRAIN_EVAL, PLAY, COMPETE, MULTICOMPETE, IDLE, SETBOARD, TESTVALUEFUNC, TESTBESTMOVE, SHOWNTUPLE /* unused */, SETNTUPLE, INSPNTUPLE, MULTITRAIN, EVALUATE, SAVE_X, SAVE_O, SAVE_EVAL, LOAD_X, LOAD_O, LOAD_EVAL
+		TRAIN_X, TRAIN_O, TRAIN_EVAL, PLAY, COMPETE, MULTICOMPETE, IDLE, SETBOARD, TESTVALUEFUNC, TESTBESTMOVE, SHOWNTUPLE /* unused */, SETNTUPLE, INSPNTUPLE, MULTITRAIN, EVALUATE, SAVE_X, SAVE_O, SAVE_EVAL, LOAD_X, LOAD_O, LOAD_EVAL, SAVE_WEIGHTS_X, SAVE_WEIGHTS_O, SAVE_WEIGHTS_EVAL, LOAD_WEIGHTS_X, LOAD_WEIGHTS_O, LOAD_WEIGHTS_EVAL
 	};
 
 	protected State state = State.IDLE;
@@ -141,8 +139,6 @@ public class C4Game extends JPanel implements Runnable, ListOperation {
 
 	// Progress for some Functions
 	private Progress progress = null;
-	
-	
 
 	// Other Windows
 	protected OptionsMinimax winOptionsGTV = new OptionsMinimax(
@@ -176,9 +172,9 @@ public class C4Game extends JPanel implements Runnable, ListOperation {
 	// Flag, that is set, when the Step-Button is selected. This causes the
 	// current agent to make a move
 	private boolean playStep = false;
-	
+
 	// Saving/Loading of Agents is done with this
-		private LoadSaveTD tdAgentIO;
+	private LoadSaveTD tdAgentIO;
 
 	public C4Game() {
 		initGame();
@@ -200,7 +196,7 @@ public class C4Game extends JPanel implements Runnable, ListOperation {
 		valueBoard = new JLabel[3][7];
 		c4Buttons = new C4Buttons(this);
 		c4Menu = new C4Menu(this, c4Frame);
-		
+
 		tdAgentIO = new LoadSaveTD(this, c4Buttons, c4Frame);
 
 		playingBoardPanel = initPlayingBoard();
@@ -716,14 +712,14 @@ public class C4Game extends JPanel implements Runnable, ListOperation {
 
 		return tds;
 	}
-	
+
 	protected Agent initMCTSAgent(int player) {
 		if (params[player] == null
 				|| !params[player].getClass().equals(OptionsMCTS.class))
 			params[player] = new OptionsMCTS(new MCTSParams());
 		OptionsMCTS opMCTS = (OptionsMCTS) params[player];
 		MCTSPlayer mctsPlayer = new MCTSPlayer(opMCTS.getMCTSParams());
-		
+
 		return mctsPlayer;
 	}
 
@@ -769,7 +765,7 @@ public class C4Game extends JPanel implements Runnable, ListOperation {
 				activeEligTracesOverall += activeTraces;
 				activeEligTracesInterval += activeTraces;
 			}
-			if (GameInterval.evalNecessary(tdPar.infoInterval, i)  && i != 0) {
+			if (GameInterval.evalNecessary(tdPar.infoInterval, i) && i != 0) {
 
 				if (useCSV) {
 					System.out.print(i + ";" + df.format(tds.getAlpha()) + ";"
@@ -889,12 +885,9 @@ public class C4Game extends JPanel implements Runnable, ListOperation {
 	// return dlg;
 	// }
 
-
-
 	// ==============================================================
 	// Menu: Load
 	// ==============================================================
-	
 
 	// ==============================================================
 	// N-Tuple-Operations for
@@ -1426,13 +1419,13 @@ public class C4Game extends JPanel implements Runnable, ListOperation {
 				evaluate();
 				break;
 			case SAVE_X:
-				 saveAgent(0);
+				saveAgent(0);
 				break;
 			case SAVE_O:
-				 saveAgent(1);
+				saveAgent(1);
 				break;
 			case SAVE_EVAL:
-				 saveAgent(2);
+				saveAgent(2);
 				break;
 			case LOAD_X:
 				loadAgent(0);
@@ -1442,6 +1435,24 @@ public class C4Game extends JPanel implements Runnable, ListOperation {
 				break;
 			case LOAD_EVAL:
 				loadAgent(2);
+				break;
+			case LOAD_WEIGHTS_X:
+				loadAgentWeights(0);
+				break;
+			case LOAD_WEIGHTS_O:
+				loadAgentWeights(1);
+				break;
+			case LOAD_WEIGHTS_EVAL:
+				loadAgentWeights(2);
+				break;
+			case SAVE_WEIGHTS_X:
+				saveAgentWeights(0);
+				break;
+			case SAVE_WEIGHTS_O:
+				saveAgentWeights(1);
+				break;
+			case SAVE_WEIGHTS_EVAL:
+				saveAgentWeights(2);
 				break;
 			default:
 				break;
@@ -1454,7 +1465,7 @@ public class C4Game extends JPanel implements Runnable, ListOperation {
 			}
 		}
 	}
-	
+
 	void saveAgent(int index) {
 		Agent td = players[index];
 		String str = "";
@@ -1471,12 +1482,18 @@ public class C4Game extends JPanel implements Runnable, ListOperation {
 		c4Buttons.printStatus(str);
 		changeState(State.IDLE);
 	}
-	
+
 	void loadAgent(int index) {
-		final String agentTypes[] = { "Agent X", "Agent O", "Agent Eval" };
 		TDSAgent td = tdAgentIO.loadTDAgent();
 		String str;
+		str = setTDAgent(index, td);
+		changeState(State.IDLE);
+		c4Buttons.printStatus(str);
+	}
 
+	private String setTDAgent(int index, TDSAgent td) {
+		String str;
+		final String agentTypes[] = { "Agent X", "Agent O", "Agent Eval" };
 		if (td == null) {
 			str = "No Agent loaded!";
 		} else {
@@ -1500,10 +1517,43 @@ public class C4Game extends JPanel implements Runnable, ListOperation {
 				break;
 			}
 		}
+		return str;
+	}
+
+	void saveAgentWeights(int index) {
+		Agent td = players[index];
+		String str = "";
+		if (td instanceof TDSAgent) {
+			str = "[Save Agent Weights!]";
+			try {
+				// JOptionPane
+				// .showMessageDialog(
+				// c4Frame,
+				// "<html><body>The weights of the system will be stored in 2 files, "
+				// +
+				// "since separate<br> value functions are learnt for both players.<br> "
+				// +
+				// "Therefore, you have to select two files in the following.<br>"
+				// +
+				// "For details, refer to the help file.</body></html>");
+				tdAgentIO.saveTDAgentWeights2((TDSAgent) td);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		} else {
+			str = "[No TD-Agent Selected. Nothing saved!]";
+		}
+		c4Buttons.printStatus(str);
+		changeState(State.IDLE);
+	}
+
+	void loadAgentWeights(int index) {
+		TDSAgent td = tdAgentIO.loadTDAgentWeights();
+		String str = setTDAgent(index, td);
 		changeState(State.IDLE);
 		c4Buttons.printStatus(str);
 	}
-	
+
 	public void setProgress(Progress p) {
 		this.progress = p;
 	}

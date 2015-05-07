@@ -135,6 +135,32 @@ public class C4Menu extends JMenuBar {
 			submenu.addSeparator();
 
 			// ==============================================================
+			// Load Weights into Agent
+			// ==============================================================
+			menuItem = new JMenuItem("Import Agent Weights");
+			menuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					loadAgentWeights(j);
+				}
+			});
+			// menuItem.setToolTipText(TIPSAVE);
+			submenu.add(menuItem);
+			//submenu.addSeparator();
+
+			// ==============================================================
+			// Save Weights of an Agent
+			// ==============================================================
+			menuItem = new JMenuItem("Export Agent Weights");
+			menuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					saveAgentWeights(j);
+				}
+			});
+			//menuItem.setToolTipText(TIPSAVE);
+			submenu.add(menuItem);
+			submenu.addSeparator();
+
+			// ==============================================================
 			// Show N-Tuples Agent X
 			// ==============================================================
 			// menuItem = new JMenuItem("Show N-Tuples");
@@ -384,7 +410,7 @@ public class C4Menu extends JMenuBar {
 
 		add(menu);
 	}
-	
+
 	void loadAgent(int index) {
 		switch (index) {
 		case 0:
@@ -398,7 +424,7 @@ public class C4Menu extends JMenuBar {
 			break;
 		}
 	}
-	
+
 	void saveAgent(int index) {
 		switch (index) {
 		case 0:
@@ -409,6 +435,34 @@ public class C4Menu extends JMenuBar {
 			break;
 		case 2:
 			c4Game.changeState(State.SAVE_EVAL);
+			break;
+		}
+	}
+
+	void loadAgentWeights(int index) {
+		switch (index) {
+		case 0:
+			c4Game.changeState(State.LOAD_WEIGHTS_X);
+			break;
+		case 1:
+			c4Game.changeState(State.LOAD_WEIGHTS_O);
+			break;
+		case 2:
+			c4Game.changeState(State.LOAD_WEIGHTS_EVAL);
+			break;
+		}
+	}
+
+	void saveAgentWeights(int index) {
+		switch (index) {
+		case 0:
+			c4Game.changeState(State.SAVE_WEIGHTS_X);
+			break;
+		case 1:
+			c4Game.changeState(State.SAVE_WEIGHTS_O);
+			break;
+		case 2:
+			c4Game.changeState(State.SAVE_WEIGHTS_EVAL);
 			break;
 		}
 	}

@@ -13,7 +13,6 @@ import nTupleTD.TDParams.UpdateMethod;
 import adaptableLearningRates.*;
 import adaptableLearningRates.LearningRates.LRCommon;
 
-
 /**
  * A WeightSubSet is a subset of weights of a value-function, assuming that the
  * feature-vector of this subset always only returns one element unequal zero.
@@ -33,10 +32,27 @@ public abstract class WeightSubSet implements Serializable {
 	protected final LRCommon lrCommon; // final, to make sure, it is set
 										// directly in the beginning
 	protected boolean useElig = true;
-	protected TreeMap<Integer, Double> eligTraces = null;
+	protected TreeMap<Integer, EligibilityTrace> eligTraces = null;
+
+	public static class EligibilityTrace implements Serializable {
+		private static final long serialVersionUID = 9033762045461508842L;
+		double e_i;
+		double x_i; // Set to zero on the first scale. Only set again, if weight
+					// is activated...
+
+		public EligibilityTrace() {
+			this.e_i = 0.0;
+			this.x_i = 0.0;
+		}
+
+		public EligibilityTrace(double e_i, double x_i) {
+			this.e_i = e_i;
+			this.x_i = x_i;
+		}
+	}
 
 	private ArrayList<Double> dbgRWCList = DEBUG ? new ArrayList<Double>(
-			 DBG_SIZE_RWC_LIST) : null;
+			DBG_SIZE_RWC_LIST) : null;
 
 	// ======================================================================
 	// Abstract Methods
@@ -98,7 +114,12 @@ public abstract class WeightSubSet implements Serializable {
 		case IDBDMSE:
 			return new IDBD(tdPar, length);
 		case IRPROP_PLUS:
-			return new IRprop(tdPar, length, lrCommon);
+			// return new IRprop(tdPar, length, lrCommon);
+			return new RProp(tdPar, length);
+		case ALAP:
+			return new ALAP(tdPar, length);
+		case SMD:
+			return new SMD(tdPar, length);
 		default:
 			throw new UnsupportedOperationException("Method not supported yet!");
 		}
@@ -150,7 +171,8 @@ public abstract class WeightSubSet implements Serializable {
 				for (Double i : dbgRWCList) {
 					sum += Math.abs(i);
 				}
-				System.out.println("average abs. rwc in episode: " + sum / DBG_SIZE_RWC_LIST);
+				System.out.println("average abs. rwc in episode: " + sum
+						/ DBG_SIZE_RWC_LIST);
 				dbgRWCList.clear();
 			}
 		}
@@ -159,15 +181,17 @@ public abstract class WeightSubSet implements Serializable {
 	}
 
 	public void updateLUTwithElig(UpdateParams u) {
-		Set<Entry<Integer, Double>> c = eligTraces.entrySet();
-		for (Iterator<Entry<Integer, Double>> i = c.iterator(); i.hasNext();) {
-			Entry<Integer, Double> entry = i.next();
+		Set<Entry<Integer, EligibilityTrace>> c = eligTraces.entrySet();
+		for (Iterator<Entry<Integer, EligibilityTrace>> i = c.iterator(); i
+				.hasNext();) {
+			Entry<Integer, EligibilityTrace> entry = i.next();
 
 			int index = entry.getKey();
-			double e_i = entry.getValue();
-			// TODO:x_i needed??
+			EligibilityTrace et = entry.getValue();
+			double e_i = et.e_i;
+			double x_i = et.x_i;
 			UpdateParams u_i = new UpdateParams(index, u.globalAlpha, u.delta,
-					u.derivY, e_i, u.y);
+					u.derivY, e_i, x_i, u.y);
 			update(u_i);
 		}
 	}
@@ -176,25 +200,35 @@ public abstract class WeightSubSet implements Serializable {
 		eligTraces.clear();
 	}
 
-	public void addGradToElig(int index, double grad) {
+	public void addGradToElig(int index, double grad, double x_i) {
 		boolean replacingTraces = tdPar.replacingTraces;
 		Object entry = eligTraces.get(index);
 		if (!replacingTraces) {
 			// Before, we also replaced when we had x_i=2, because we called
 			// this function twice. See what changes now...
-			double value = (Double) (entry == null ? 0.0 : entry);
-			eligTraces.put(index, value + grad);
+			EligibilityTrace et = (EligibilityTrace) (entry == null ? new EligibilityTrace()
+					: entry);
+
+			et.e_i += grad;
+			et.x_i = x_i;
+			eligTraces.put(index, et);
 		} else
-			eligTraces.put(index, grad);
+			eligTraces.put(index, new EligibilityTrace(grad, x_i));
 	}
 
 	public void scaleElig(double lambdaGamma) {
 		// Multiply all elements of the elig-vector with lambda*gamma
-		Set<Entry<Integer, Double>> c = eligTraces.entrySet();
-		for (Iterator<Entry<Integer, Double>> i = c.iterator(); i.hasNext();) {
-			Entry<Integer, Double> entry = i.next();
-			double e_i = entry.getValue() * lambdaGamma;
-			entry.setValue(e_i);
+		Set<Entry<Integer, EligibilityTrace>> c = eligTraces.entrySet();
+		for (Iterator<Entry<Integer, EligibilityTrace>> i = c.iterator(); i.hasNext();) {
+			Entry<Integer, EligibilityTrace> entry = i.next();
+			EligibilityTrace et = entry.getValue();
+			et.e_i *= lambdaGamma;
+			//
+			// We set x_i to zero, since it may not be activated
+			// anymore in this episode. Otherwise x_i will be set again...
+			//
+			et.x_i = 0.0;
+			entry.setValue(et);
 		}
 	}
 
@@ -204,7 +238,7 @@ public abstract class WeightSubSet implements Serializable {
 	 * @return the activated elig-trace.
 	 */
 	public double getElig(int i) {
-		Double value = eligTraces.get(i);
+		Double value = eligTraces.get(i).e_i;
 		return (value == null ? 0.0 : value);
 	}
 
@@ -224,6 +258,10 @@ public abstract class WeightSubSet implements Serializable {
 		if (lut != null)
 			return lut.length * (inBytes ? SIZEOF_FLOAT : 1);
 		return 0;
+	}
+	
+	public float[] getLUT() {
+		return lut;
 	}
 
 	public void printLUT() {

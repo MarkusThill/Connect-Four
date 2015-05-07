@@ -109,12 +109,12 @@ public class TDParams implements Serializable, Cloneable {
 	// 2. Use Temporal Coherence dw(i)=alpha*alpha_w(i)*delta*elig
 	// 3. Use Incremental Delta-Bar-Delta
 	public enum UpdateMethod {
-		TDL, TCL, IDBD_LINEAR, IDBD_NONLINEAR, AUTOSTEP, K1, ELK1, IDBD_WK, ALPHABOUND, IDBDMSE, IRPROP_PLUS
+		TDL, TCL, IDBD_LINEAR, IDBD_NONLINEAR, AUTOSTEP, K1, ELK1, IDBD_WK, ALPHABOUND, IDBDMSE, IRPROP_PLUS, ALAP, SMD
 	};
 
 	public static final String[] WEIGHTUPDATEMETHOD = new String[] { "TDL",
 			"TCL", "IDBD", "IDBD (nonlinear Koop)", "AUTOSTEP", "K1 (linear)",
-			"ELK1 (nonlinear)", "IDBD_WK", "Alpha Bound", "IDBD (MSE)", "iRprop+" };
+			"ELK1 (nonlinear)", "IDBD_WK", "Alpha Bound", "IDBD (MSE)", "Rprop", "ALAP", "SMD" };
 
 	public UpdateMethod updateMethod = UpdateMethod.TCL;
 	public double epsilonSlope = 10.0; // Slope of tanh in epsilon

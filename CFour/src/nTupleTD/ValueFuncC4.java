@@ -10,13 +10,13 @@ import adaptableLearningRates.ActivationFunction;
 import adaptableLearningRates.AutoStep;
 import adaptableLearningRates.ELK1;
 import adaptableLearningRates.IDBDwk;
-import adaptableLearningRates.IRprop;
 import adaptableLearningRates.LearningRates.LRCommon;
+import adaptableLearningRates.SMD;
 import adaptableLearningRates.TemporalCoherence;
 import c4.ConnectFour;
 
 /**
- *  Implementation of an learning value-function using a n-Tuple-System
+ * Implementation of an learning value-function using a n-Tuple-System
  * 
  * @author Markus Thill
  * 
@@ -33,7 +33,7 @@ public class ValueFuncC4 implements Serializable {
 	private static final int NUMROWS = 6;
 
 	// use if feature vector elements are max. g_i(s_t) = 1
-	private static final boolean USEBINARYFV = false;
+	private static final boolean USEBINARYFV = false; // true, appears to be better for IDBD and maybe for others as well.
 
 	private TDParams tdPar = null;
 
@@ -144,8 +144,8 @@ public class ValueFuncC4 implements Serializable {
 		// the Step-Size Adaption algorithm. Create here
 		if (tdPar.updateMethod == UpdateMethod.IDBD_WK)
 			lrCommon = IDBDwk.createCommonLR(tdPar);
-		else if (tdPar.updateMethod == UpdateMethod.IRPROP_PLUS)
-			lrCommon = IRprop.createCommonLR(tdPar);
+		//else if (tdPar.updateMethod == UpdateMethod.IRPROP_PLUS)
+		//	lrCommon = IRprop.createCommonLR(tdPar);
 
 		for (int i = 0; i < nTuples.length; i++) {
 			this.nTuples[0][i] = new NTupleC4(nTuples[i], this.tdPar, lrCommon);
@@ -320,6 +320,11 @@ public class ValueFuncC4 implements Serializable {
 			}
 			alpha = getGlobalAlphaBound(i, i_1, p, deriv_i);
 		}
+		else if(upMeth == UpdateMethod.SMD) {
+			double hSum = getSumHActiveWeights(i, useSymmetry, p);
+			// Ugly, but use alpha as variable for the sum of h_i
+			alpha = hSum;
+		}
 
 		if (updateMeth != UpdateMethod.TCL || !useEpisodes) {
 			if (tdPar.lambda == 0.0) // Simple update without TCL-episodes
@@ -330,7 +335,7 @@ public class ValueFuncC4 implements Serializable {
 						.getDeriv(y, tdPar.activation);
 				// Here only delta, derivY and y are needed to bet set
 				// i and e_i are set later, so set to arbitrary values here
-				u = new UpdateParams(-999, alpha, delta, derivY, -999, y);
+				u = new UpdateParams(-999, alpha, delta, derivY, -999, -999, y);
 				updateWithEligTraces(u);
 			}
 		} else
@@ -379,13 +384,16 @@ public class ValueFuncC4 implements Serializable {
 		int p = (curPlayer == ConnectFour.PLAYER1 ? 0 : 1);
 
 		// ##############################################################
-		UpdateParams u_i = new UpdateParams(-1, alpha, delta, deriv_i, 1, y);
+		UpdateParams u_i = new UpdateParams(-1, alpha, delta, deriv_i, 1, -999, y);
 		if (lrCommon != null)
 			lrCommon.commonPreUpdateTask(u_i);
 		for (k = 0; k < numTuples; k++) {
 			u_i.e_i = elig_i;
-			if (i[k] == i[k + numTuples] && !USEBINARYFV)
+			u_i.x_i = 1.0;
+			if (i[k] == i[k + numTuples] && !USEBINARYFV) {
 				u_i.e_i = 2 * elig_i;
+				u_i.x_i++;
+			}
 			u_i.i = i[k];
 			weights[p][k].update(u_i);
 		}
@@ -393,6 +401,7 @@ public class ValueFuncC4 implements Serializable {
 			if (i[k] == i[k - numTuples])
 				continue;
 			u_i.e_i = elig_i;
+			u_i.x_i = 1.0;
 			u_i.i = i[k];
 			weights[p][j].update(u_i);
 		}
@@ -489,6 +498,29 @@ public class ValueFuncC4 implements Serializable {
 		M = Math.max(M, 1);
 		return 1.0 / M;
 	}
+	
+	private double getSumHActiveWeights(int[] i,
+			boolean useSymmetry, int p) {
+		double H = 0.0;
+		double x_i;
+		int numTuples = weights[0].length;
+		int k;
+		// TODO: For eligibility traces
+		for (k = 0; k < numTuples; k++) {
+			x_i = 1;
+			if (i[k] == i[k + numTuples] && !USEBINARYFV)
+				x_i = 2;
+			SMD smd = (SMD) weights[p][k].lr;
+			H += x_i * smd.getH(i[k], x_i);
+		}
+		for (int j = 0; useSymmetry && j < numTuples; k++, j++) {
+			if (i[k] == i[k - numTuples])
+				continue; // was done in previous loop
+			SMD smd = (SMD) weights[p][j].lr;
+			H += smd.getH(i[k], 1.0);
+		}
+		return H;
+	}
 
 	private void updateEpisodicTCL(int curPlayer, long curZobr,
 			long[] curBoard, double delta, double y) {
@@ -563,10 +595,10 @@ public class ValueFuncC4 implements Serializable {
 
 		// Init elig with the gradient for the given board (normally empty
 		// board) grad_w{ f(w,g(s_0)) }
-		updateElig(board, zobr, playerToMove);
+		updateElig(board, zobr, playerToMove, false);
 	}
 
-	public void updateElig(long board[], long zobr, int playerToMove) {
+	public void updateElig(long board[], long zobr, int playerToMove, boolean scale) {
 
 		double v = getValue(playerToMove, zobr, board);
 		// double grad = (1 - v * v); // grad=feature-vector*(1-v0^2)
@@ -590,7 +622,10 @@ public class ValueFuncC4 implements Serializable {
 		// e <- e * lambda * gamma
 		// The scaling has to be done for all LUTs (for both players). All
 		// elements <> 0 in the elig-vector are therefore scaled.
-		scaleElig();
+		// TODO: After resetting the eligibility traces. Are we allowed to scale
+		// the vector already? I don't think so...
+		if(scale)
+			scaleElig();
 
 		// The feature-vector g(s_{t+1}) sets all elements for the other player
 		// to zero. Also the gradient-elements will be zero for those. We only
@@ -602,14 +637,17 @@ public class ValueFuncC4 implements Serializable {
 		double eAdd_i = 0.0;
 		for (k = 0; k < numTuples; k++) {
 			eAdd_i = grad;
-			if (i[k] == i[k + numTuples] && !USEBINARYFV)
+			double x_i = 1.0;
+			if (i[k] == i[k + numTuples] && !USEBINARYFV) {
 				eAdd_i *= 2;
-			weights[index][k].addGradToElig(i[k], eAdd_i);
+				x_i++;
+			}
+			weights[index][k].addGradToElig(i[k], eAdd_i, x_i);
 		}
 		for (int j = 0; useSymmetry && j < numTuples; k++, j++) {
 			if (i[k] == i[k - numTuples])
 				continue;
-			weights[index][j].addGradToElig(i[k], grad);
+			weights[index][j].addGradToElig(i[k], grad, 1.0);
 		}
 	}
 
@@ -958,6 +996,10 @@ public class ValueFuncC4 implements Serializable {
 			// mult. with 2, because N-Tuple-System for each player
 			size += nTuples[0][i].getLUTSize(inBytes) * 2;
 		return size;
+	}
+	
+	public WeightSubSet[][] getWeightSubSet() {
+		return weights;
 	}
 
 	public String getCommonLR() {

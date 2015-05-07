@@ -1,11 +1,7 @@
 package mcts;
 
-import guiOptions.OptionsMinimax;
-
 import java.util.Arrays;
 import java.util.Random;
-
-import openingBook.BookSum;
 
 import c4.AlphaBetaAgent;
 import c4.ConnectFour;
@@ -95,6 +91,7 @@ public class GameState extends ConnectFour {
 		return new GameState(fieldP1, fieldP2, colHeight.clone(), p, actions);
 	}
 
+	@SuppressWarnings("unused")
 	public double rollOut() {
 		// TODO: roll-out, starting with this game-state
 		// TODO: In the beginning, use Minimax as return for rollout

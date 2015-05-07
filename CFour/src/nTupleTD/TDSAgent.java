@@ -327,7 +327,7 @@ public class TDSAgent extends ConnectFour implements Agent, Progress,
 
 			boolean resetEligOnRandomMove = td.resetEligOnRandomMove;
 
-			// Added on 31.09.2014: Possibility to update value-function when
+			// Possibility to update value-function when
 			// random moves are performed
 			if (!randomMove || !resetEligOnRandomMove) {
 				// Update elig-traces
@@ -338,7 +338,7 @@ public class TDSAgent extends ConnectFour implements Agent, Progress,
 				// V(s_{t+1}).
 				// TODO: scale Elig on random move, or not???
 				if (td.lambda != 0.0)
-					m_Net.updateElig(curBoard, zobr, player);
+					m_Net.updateElig(curBoard, zobr, player, true);
 			} else if (td.lambda != 0.0) {
 				// if we made a random move, we maybe have to reset the
 				// eligibility
@@ -435,6 +435,10 @@ public class TDSAgent extends ConnectFour implements Agent, Progress,
 	 */
 	public TDParams getTDParams() {
 		return td;
+	}
+	
+	public WeightSubSet[][] getWeightSubset() {
+		return m_Net.getWeightSubSet();
 	}
 
 	public String getCommonLR() {

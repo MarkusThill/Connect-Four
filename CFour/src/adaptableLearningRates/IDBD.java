@@ -12,7 +12,7 @@ import nTupleTD.TDParams.UpdateMethod;
  * 
  */
 public class IDBD extends LearningRates {
-
+	//public static final boolean USE_INSTANIOUS_HESSIAN = false;
 	private static final long serialVersionUID = 4685813855032499613L;
 	public static final double IDBD_LIN_BEST_BETA_INIT = -5.0;
 	public static final double IDBD_LIN_BEST_THETA = 3.0;
@@ -100,11 +100,18 @@ public class IDBD extends LearningRates {
 	 */
 	@Override
 	public void postWeightUpdateTask(UpdateParams u_i) {
+		//TODO: Testwise...
+//		if(USE_INSTANIOUS_HESSIAN) {
+//			updateHinstantaniousHessian(u_i);
+//			return;
+//		}
+		
 		int i = u_i.i;
 		double e_i = u_i.e_i;
+		double x_i = u_i.x_i;
 		double idbd_alpha = Math.exp(idbd_beta[i]);
 		// Koops non-linear version needs *y*(1-y) in grad
-		double x_plus = 1.0 - idbd_alpha * e_i * e_i * u_i.derivY;
+		double x_plus = 1.0 - idbd_alpha * e_i * x_i * u_i.derivY; //TODO: changed to match the IDBD(lambda algorithm)
 		if (x_plus < 0)
 			x_plus = 0.0;
 		idbd_h[i] = (float) (idbd_h[i] * x_plus + idbd_alpha * u_i.delta * e_i);
@@ -150,5 +157,26 @@ public class IDBD extends LearningRates {
 
 		return bestTDPar;
 	}
+
+
+	
+	//TODO: Testwise, for instantaneous Hessian in IDBD (no approximation)
+//	public void updateHinstantaniousHessian(UpdateParams u_i) {
+//		int i = u_i.i;
+//		double alpha = getLearningRate(u_i);
+//		float[] h = idbd_h;
+//		double x_i = u_i.e_i;
+//		//double cPlus = (1.0 - alpha * x_i * x_i);
+//		//if(cPlus < 0)
+//		//	cPlus = 0.0;
+//		// The sum of all h_i * x_i is hidden in globalAlpha
+//		//double sumTraces = alpha * x_i * (u_i.globalAlpha);
+//		//if(Math.abs(sumTraces) > 0.1)
+//		//	sumTraces = 0.0;
+//		// Try SMD
+//		double lambda = 0.99; // try extreme value 0.5
+//		double h_i = lambda * (h[i] - alpha * x_i * u_i.globalAlpha) +  alpha * x_i * u_i.delta;
+//		h[i] = (float) h_i;
+//	}
 
 }

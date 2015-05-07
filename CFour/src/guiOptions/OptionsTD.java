@@ -787,6 +787,12 @@ public class OptionsTD extends JFrame {
 		case IRPROP_PLUS:
 			lIdbdTitle.setText("IDBD");
 			break;
+		case ALAP:
+			lIdbdTitle.setText("ALAP");
+			break;
+		case SMD:
+			lIdbdTitle.setText("SMD");
+			break;
 		default:
 			throw new UnsupportedOperationException("Method not supported yet!");
 		}
@@ -912,6 +918,7 @@ public class OptionsTD extends JFrame {
 			lIdbdWkOmega.setEnabled(false);
 			break;
 		case AUTOSTEP:
+		case ALAP:
 			tAlpha.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1,
 					Color.red));
 			// deactivate TCL and IDBD
@@ -1158,6 +1165,47 @@ public class OptionsTD extends JFrame {
 			if (index == UpdateMethod.IDBD_NONLINEAR)
 				comboActivation.setSelectedIndex(Activation.LOGSIG.getValue());
 			break;
+		case SMD:
+			lAlpha.setEnabled(true);
+			lAlphafin.setEnabled(false);
+			tAlpha.setEnabled(true);
+			tAlphafin.setEnabled(false);
+			lIdbdBetaInit.setEnabled(false);
+			lIdbdTheta.setEnabled(true);
+			lIdbdTitle.setEnabled(true);
+			tIdbdBetaInit.setEnabled(false);
+			tIdbdTheta.setEnabled(true);
+			lTclTitle.setEnabled(false);
+			lTclDiscountBiasFinal.setEnabled(false);
+			lTclDiscountBiasInit.setEnabled(false);
+			lTclDiscountFinal.setEnabled(false);
+			lTclDiscountInit.setEnabled(false);
+			lTclEpsisodeLength.setEnabled(false);
+			lTclInitNA.setEnabled(false);
+			lTclTitle.setEnabled(false);
+			tTclDiscountBiasFinal.setEnabled(false);
+			tTclDiscountBiasInit.setEnabled(false);
+			tTclDiscountFinal.setEnabled(false);
+			tTclDiscountInit.setEnabled(false);
+			tTclInitNA.setEnabled(false);
+			tTclEpsiodeLength.setEnabled(false);
+			cbTclUseEpisodes.setEnabled(false);
+			cbTclUseExpScheme.setEnabled(false);
+			lTclExpSchemeA.setEnabled(false);
+			lTclExpSchemeB.setEnabled(false);
+			tTclExpSchemeA.setEnabled(false);
+			tTclExpSchemeB.setEnabled(false);
+			rbTclUpdateErrorSignal.setEnabled(false);
+			rbTclUpdateNAWeights.setEnabled(false);
+			rbTclUpdateRecommendedWC.setEnabled(false);
+			rbTclUpdateWeightsNA.setEnabled(false);
+			comboActivation.setEnabled(true);
+			tIdbdWkOmega.setEnabled(false);
+			lIdbdWkOmega.setEnabled(false);
+			comboActivation.setSelectedIndex(Activation.LOGSIG.getValue());
+			tAlpha.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1,
+					Color.red));
+			break;
 		default:
 			throw new UnsupportedOperationException(
 					"No behaviour for selected method defined: " + index
@@ -1338,6 +1386,12 @@ public class OptionsTD extends JFrame {
 			break;
 		case 10:
 			meth = UpdateMethod.IRPROP_PLUS;
+			break;
+		case 11:
+			meth = UpdateMethod.ALAP;
+			break;
+		case 12:
+			meth = UpdateMethod.SMD;
 			break;
 		default:
 			throw new UnsupportedOperationException("Method not supported yet");
