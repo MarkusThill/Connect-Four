@@ -1,7 +1,7 @@
 Connect-Four
 ============
 
-![Connect-4 Framework](c4-main-window.png)
+![Connect-4 Framework](c4-main-window.PNG)
 
 A Java framework for the game Connect Four (Connect-4) with different types of agents and algorithms (reinforcement learning [TD with eligibility traces], AlphaBeta-Search, MCTS). Contains a perfect-playing MiniMax agent for evaluation purposes.
 The Connect-4 game playing framework (C4GPF) emerged from the work on several studies over the last years. The framework provides a GUI with which the user can train, interact with and measure the strength of various agents and more. The whole software is written in Java and can be easily extended by experienced programmers. 
