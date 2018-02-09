@@ -1,6 +1,8 @@
 Connect-Four
 ============
 
+![Connect-4 Framework](c4-main-window.png)
+
 A Java framework for the game Connect Four (Connect-4) with different types of agents and algorithms (reinforcement learning [TD with eligibility traces], AlphaBeta-Search, MCTS). Contains a perfect-playing MiniMax agent for evaluation purposes.
 The Connect-4 game playing framework (C4GPF) emerged from the work on several studies over the last years. The framework provides a GUI with which the user can train, interact with and measure the strength of various agents and more. The whole software is written in Java and can be easily extended by experienced programmers. 
 
@@ -37,9 +39,4 @@ The framework already provides several inbuilt agents which can be selected as o
 ## Step-size Adaptation Algorithms
 All step-size adaptation algorithms that are described in this thesis can be selected and configured by the user in the C4GPF. At the time this work was created, several step-size adaptation algorithms are supported by our framework.
 
-
-		
-		includegraphics[width=0.99textwidth]{Figures.d/appendix/c4-main-window.png} 
-
-		\includegraphics[width=0.79\textwidth]{Figures.d/appendix/tdl-parameters.png} 
-	\caption[TD-parameter window of the \cfour Game Playing Framework]{TD-parameter window of the \cfour Game Playing Framework 
+![TD-parameter window of the Connect-4 Game Playing Framework ](tdl-parameters.png)		
