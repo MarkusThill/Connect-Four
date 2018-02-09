@@ -1,4 +1,4 @@
-Connect-Four
+Connect-Four Game Playing and Learning Framework
 ============
 
 ![Connect-4 Framework](c4-main-window.PNG)
