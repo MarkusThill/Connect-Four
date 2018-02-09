@@ -28,17 +28,18 @@ The Connect-4 game playing framework (C4GPF) emerged from the work on several st
 ## Agents
 The framework already provides several inbuilt agents which can be selected as opponents for the user or which can play matches against each other. It is fairly simple for other developers to plug in new agents, if the interface ``Agent.java'' is used. 
 * Random Agent: Plays completely random moves and can be constantly defeated even by weak agents.
-* Monte Carlo Tree Search (MCTS): A fairly simple agent in an early development phase, based on the general MCTS approach, without any special enhancements. With 500\,000 iterations, the playing strength is comparable to a standard Minimax agent with a search depth of depth 12.
+* Monte Carlo Tree Search (MCTS): A fairly simple agent in an early development phase, based on the general MCTS approach, without any special enhancements. With 500 000 iterations, the playing strength is comparable to a standard Minimax agent with a search depth of depth 12.
 * Perfect playing Minimax agent supported by a 8-ply and 12-ply database and a transposition table (25 MB by default) and many other enhancements. Currently, this agent is one of the fastest tree-search algorithms available for Connect-4: Even without the support of the databases, the best move for the empty board can be found in less than 4 minutes on a Pentium-4 computer (using only a 25 MB transposition table). 
 	The strength of the agent can be controlled by the search-depth. 
-* Reinforcement Learning (RL) agent: The agent is based on an n-tuple system~\cite{Lucas08} and trained with TD-Learning. The TD-Learning algorithm supports eligibility traces and can be augmented with several step-size adaptation algorithms, such as TCL, IDBD, Autostep and others (listed below).
+* Reinforcement Learning (RL) agent: The agent is based on an n-tuple system and trained with TD-Learning. The TD-Learning algorithm supports eligibility traces and can be augmented with several step-size adaptation algorithms, such as TCL, IDBD, Autostep and others (listed below).
 * RL-Minimax agent: Performs a classical tree search. On the leafs of the tree an RL agent is used to estimate the corresponding state value.
 
 ## Step-size Adaptation Algorithms
 All step-size adaptation algorithms that are described in this thesis can be selected and configured by the user in the C4GPF. At the time this work was created, several step-size adaptation algorithms are supported by our framework.
 
 
-		\includegraphics[width=0.99\textwidth]{Figures.d/appendix/c4-main-window.png} 
+		
+		includegraphics[width=0.99textwidth]{Figures.d/appendix/c4-main-window.png} 
 
 		\includegraphics[width=0.79\textwidth]{Figures.d/appendix/tdl-parameters.png} 
 	\caption[TD-parameter window of the \cfour Game Playing Framework]{TD-parameter window of the \cfour Game Playing Framework 
