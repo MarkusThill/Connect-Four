@@ -9,7 +9,7 @@ import openingBook.BookSum;
 
 /**
  * 
- * This class is an implementation of an Alpha-Beta-Agent. It is recommended to
+ * This class is an implementation of a classical Alpha-Beta-Agent. It is recommended to
  * use the implemented Methods by Agent. This Agent uses Transposition-Tables,
  * Move-ordering, opening Books, symmetries and some other techniques to get
  * fast results.
@@ -207,7 +207,7 @@ public class AlphaBetaAgent extends ConnectFour implements Agent, Serializable {
 	 * @return column for creating a threat, or else -1
 	 */
 	protected int findThreat(int player, int startWithCol) {
-		// Prüfen, ob eine Drohung erstellt werden kann
+		// PrÃ¼fen, ob eine Drohung erstellt werden kann
 		long temp = (player == PLAYER1 ? fieldP1 : fieldP2);
 		switch (startWithCol) {
 		case 0:
@@ -1751,7 +1751,7 @@ public class AlphaBetaAgent extends ConnectFour implements Agent, Serializable {
 	 * @return column for creating a odd-threat, or else -1
 	 */
 	protected int findOddThreatP1(int startWith) {
-		// Diese Methode sucht nach ungeraden Drohung, JEDOCH nur für den
+		// Diese Methode sucht nach ungeraden Drohung, JEDOCH nur fÃ¼r den
 		// Anziehenden
 		switch (startWith) {
 		case 0:
@@ -3154,8 +3154,8 @@ public class AlphaBetaAgent extends ConnectFour implements Agent, Serializable {
 		int[] drlt = new int[1];
 		int value = 0;
 
-		if (symPos) // War beim letzten Zug eine symmetrische Stellung möglich
-			if ((symPos = symPossible())) // ist immer noch eine möglich
+		if (symPos) // War beim letzten Zug eine symmetrische Stellung mÃ¶glich
+			if ((symPos = symPossible())) // ist immer noch eine mÃ¶glich
 				if (isSymmetric()) { // liegt eine echte Symmetrie vor
 					// Nur eine Seite des Spielfeldes muss ausprobiert werden
 					int tmp[] = new int[8];
@@ -3204,7 +3204,7 @@ public class AlphaBetaAgent extends ConnectFour implements Agent, Serializable {
 				colHeight[moves[x]]--;
 			}
 		} else {
-			// Nach Doppeldrohungen suchen, die direkt übereinander sind
+			// Nach Doppeldrohungen suchen, die direkt Ã¼bereinander sind
 			for (x = 0; moves[x] != -1; x++) {
 				if (colHeight[moves[x]] < 4) {
 					colHeight[moves[x]]++;
@@ -3848,7 +3848,7 @@ public class AlphaBetaAgent extends ConnectFour implements Agent, Serializable {
 		long threatsP1 = 0L, threatsP2 = 0L;
 
 		// Ermittlung aller Drohungen beider Spieler!
-		// Außerdem Spalten markieren, in denen Drohungen
+		// AuÃŸerdem Spalten markieren, in denen Drohungen
 		// vorhanden sind!
 		for (byte i = 0; i < COLCOUNT; i++) {
 			y = colHeight[i];
@@ -3874,7 +3874,7 @@ public class AlphaBetaAgent extends ConnectFour implements Agent, Serializable {
 			}
 		}
 
-		// Prüfen, wie viele Drohungen vorhanden sind
+		// PrÃ¼fen, wie viele Drohungen vorhanden sind
 		// und bei 0,1 oder 2 Drohungen Bewertung der
 		// Stellung ermitteln
 		switch (numThreats) {
