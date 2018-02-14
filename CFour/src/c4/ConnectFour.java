@@ -7,7 +7,7 @@ import java.util.Arrays;
  * public methods should be sufficient for normal use. Contains: the
  * board-representation (Board is coded as bitboard internally). Methods to put
  * pieces on the Board and remove them again, to find Wins / Draw, to generate
- * move-lists and much more.
+ * move-lists and much more..
  * 
  * @author Markus Thill
  * 
