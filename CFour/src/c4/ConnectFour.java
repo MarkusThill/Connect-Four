@@ -7,7 +7,7 @@ import java.util.Arrays;
  * public methods should be sufficient for normal use. Contains: the
  * board-representation (Board is coded as bitboard internally). Methods to put
  * pieces on the Board and remove them again, to find Wins / Draw, to generate
- * move-lists and much more
+ * move-lists and much more.
  * 
  * @author Markus Thill
  * 
@@ -189,7 +189,7 @@ public class ConnectFour {
 	 */
 	public void setBoard(int field[][]) {
 		// Konvertierung des Arrays in das Bitboard-Format
-		// und Eintragen der einzelnen Spaltenhöhen in colHeight
+		// und Eintragen der einzelnen SpaltenhÃ¶hen in colHeight
 		if (isLegalBoard(field)) {
 			resetBoard();
 			for (int i = 0; i < COLCOUNT; i++) {
@@ -394,7 +394,7 @@ public class ConnectFour {
 	 * @return
 	 */
 	protected long getMask(int col, int row) {
-		// Ermittelt Maske Für eine Zelle des Spielfeldes
+		// Ermittelt Maske FÃ¼r eine Zelle des Spielfeldes
 		return 1L << (ROWCOUNT * COLCOUNT - 1 - (col * ROWCOUNT + row));
 	}
 
@@ -402,7 +402,7 @@ public class ConnectFour {
 	 * Generate all masks for the 42 fields of the board.
 	 */
 	private void computeFieldMasks() {
-		// Berechnet die Masken für alle 42 Zellen des Spielfeldes
+		// Berechnet die Masken fÃ¼r alle 42 Zellen des Spielfeldes
 		for (int i = 0; i < COLCOUNT; i++) {
 			for (int j = 0; j < ROWCOUNT; j++) {
 				fieldMask[i][j] = getMask(i, j);
@@ -421,7 +421,7 @@ public class ConnectFour {
 
 		boolean lastPiece;
 
-		// Ist das Gesetz der Gravitation erfüllt???
+		// Ist das Gesetz der Gravitation erfÃ¼llt???
 		for (int i = 0; i < COLCOUNT; i++) {
 			lastPiece = false;
 			for (int j = 0; j < ROWCOUNT; j++) {
@@ -431,7 +431,7 @@ public class ConnectFour {
 				if (field[i][j] == 0) {
 					lastPiece = true;
 				}
-				// Ein Feld hat nur drei gültige Werte
+				// Ein Feld hat nur drei gÃ¼ltige Werte
 				if (field[i][j] != 0 && field[i][j] != 1 && field[i][j] != 2) {
 					return false;
 				}
@@ -464,7 +464,7 @@ public class ConnectFour {
 	 * @param col
 	 */
 	public void putPiece(int player, int col) {
-		// Es muss ggfs. geprüft werden, ob dieser Zug möglich ist
+		// Es muss ggfs. geprÃ¼ft werden, ob dieser Zug mÃ¶glich ist
 		long mask = fieldMask[col][colHeight[col]++];
 
 		if (player == PLAYER1) {
@@ -491,9 +491,9 @@ public class ConnectFour {
 	 * @param col
 	 */
 	public void removePiece(int player, int col) {
-		// Es muss ggfs. geprüft werden, ob überhaupt ein Stein in der Spalte
+		// Es muss ggfs. geprÃ¼ft werden, ob Ã¼berhaupt ein Stein in der Spalte
 		// ist
-		// Es wird eine invertierte Maske zum löschen benötigt
+		// Es wird eine invertierte Maske zum lÃ¶schen benÃ¶tigt
 		long mask = ~fieldMask[col][--colHeight[col]];
 
 		if (player == PLAYER1) {
@@ -507,7 +507,7 @@ public class ConnectFour {
 	 * Compute the height of all columns, and put results in array colHeight[7].
 	 */
 	protected void computeColHeight() {
-		// Berechnet die Füllhöhe der einzelnen Spalten
+		// Berechnet die FÃ¼llhÃ¶he der einzelnen Spalten
 		long mask;
 		int i, j;
 		for (i = 0; i < COLCOUNT; i++) {
@@ -525,7 +525,7 @@ public class ConnectFour {
 	 * @return Number of pieces on the board
 	 */
 	public int countPieces() {
-		// Zählt die Anzahl der eingeworfenen Steine beider Spieler
+		// ZÃ¤hlt die Anzahl der eingeworfenen Steine beider Spieler
 		int count = 0;
 		for (int i = 0; i < COLCOUNT; i++) {
 			count += colHeight[i];
@@ -591,7 +591,7 @@ public class ConnectFour {
 		// Convert to 32-Bit, since a lot of the literals are only 32-Bit long
 		int y = (int) x;
 		// X und Y Position in eine feste Position(0-41) umgerechnet, da die
-		// switch-anweisung schneller ausgeführt wird
+		// switch-anweisung schneller ausgefÃ¼hrt wird
 		switch (xx * 6 + yy) {
 		case 0:
 			if (!((x & 0x408100000L) != 0 && (x & 0x820800000L) != 0))
@@ -1145,8 +1145,8 @@ public class ConnectFour {
 	 * @return mirrored BitBoard
 	 */
 	protected long getMirroredField(int player) {
-		// Feld spiegeln. Wird benötigt, da Stellungen nur jeweils in einer
-		// Variante in der Eröffnungsdatenbank vorhanden sind
+		// Feld spiegeln. Wird benÃ¶tigt, da Stellungen nur jeweils in einer
+		// Variante in der ErÃ¶ffnungsdatenbank vorhanden sind
 		long temp = (player == PLAYER1 ? fieldP1 : fieldP2);
 		long mirroredField = 0L;
 
